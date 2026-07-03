@@ -37,26 +37,8 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
 
-      # ── 3. Set up Node.js ─────────────────────────────────────────────
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
-
-      # ── 4. Install dependencies ───────────────────────────────────────
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci
-
-      # ── 5. Build the production Vite bundle ───────────────────────────
-      # VITE_API_BASE_URL is the Cloud Run backend URL injected at build time
-      - name: Build Vite production bundle
-        working-directory: frontend
-        env:
-          VITE_API_BASE_URL: ${{ secrets.BACKEND_URL }}
-        run: npm run build
+      # The Vite build happens inside the multi-stage Docker build,
+      # so we don't need a local Node.js setup here.
 
       # ── 6. Set up Cloud SDK ───────────────────────────────────────────
       - name: Set up Cloud SDK
@@ -70,6 +52,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            --build-arg VITE_API_BASE_URL=${{ secrets.BACKEND_URL }} \
             -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:latest \
             -f frontend/Dockerfile \
