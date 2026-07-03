@@ -1,0 +1,29 @@
+# Credentials and secrets
+credentials.json
+*.json.key
+
+# Environment variable files
+backend/.env
+terraform/terraform.tfvars
+
+# Terraform working state
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.backup
+
+# Node.js
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Frontend build output
+frontend/dist/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

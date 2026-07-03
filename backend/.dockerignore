@@ -1,0 +1,9 @@
+node_modules/
+.env
+credentials.json
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+dist/
+.DS_Store
